@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package userservice;
+
+option go_package = "github.com/rishad004/hotel-booking-platform/user";
+
+service UserService {
+  rpc SignUp(SignUpRequest) returns (SignUpResponse);
+  rpc LogIn(LogInRequest) returns (LogInResponse);
+  rpc ListHotels(Empty) returns (HotelListResponse);
+}
+
+message SignUpRequest {
+  string username = 1;
+  string password = 2;
+  string email = 3;
+}
+
+message SignUpResponse {
+  string message = 1;
+}
+
+message LogInRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message LogInResponse {
+  string token = 1;
+}
+
+message Hotel {
+  int32 id = 1;
+  string name = 2;
+  string address = 3;
+}
+
+message HotelListResponse {
+  repeated Hotel hotels = 1;
+}
+
+message Empty {}

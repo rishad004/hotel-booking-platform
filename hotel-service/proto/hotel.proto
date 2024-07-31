@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+package hotelservice;
+
+option go_package = "github.com/rishad004/hotel-booking-platform/hotel";
+
+service HotelService {
+  rpc AddRoom(AddRoomRequest) returns (RoomResponse);
+  rpc RemoveRoom(RemoveRoomRequest) returns (RoomResponse);
+  rpc ListRooms(Empty) returns (RoomListResponse);
+  rpc ListUsers(Empty) returns (UserListResponse);
+  rpc HotelLogIn(HotelLogInRequest) returns (HotelLogInResponse);
+}
+
+message AddRoomRequest {
+  int32 hotel_id = 1;
+  string room_name = 2;
+  string room_type = 3;
+}
+
+message RemoveRoomRequest {
+  int32 room_id = 1;
+}
+
+message RoomResponse {
+  string message = 1;
+}
+
+message Room {
+  int32 id = 1;
+  string name = 2;
+  string type = 3;
+  bool is_available = 4;
+}
+
+message RoomListResponse {
+  repeated Room rooms = 1;
+}
+
+message User {
+  string id = 1;
+  string username = 2;
+  string password = 3;
+  string email = 4;
+}
+
+message UserListResponse {
+  repeated User users = 1;
+}
+
+message HotelLogInRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message HotelLogInResponse {
+  string token = 1;
+}
+
+message Empty {}
