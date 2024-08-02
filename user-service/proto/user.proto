@@ -11,17 +11,18 @@ service UserService {
 }
 
 message SignUpRequest {
-  string username = 1;
+  string name = 1;
   string password = 2;
   string email = 3;
 }
 
 message SignUpResponse {
   string message = 1;
+  string userid = 2;
 }
 
 message LogInRequest {
-  string username = 1;
+  string email = 1;
   string password = 2;
 }
 
