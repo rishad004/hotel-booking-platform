@@ -31,3 +31,18 @@ func (h *UserHandler) LogIn(c context.Context, req *pb.LogInRequest) (*pb.LogInR
 	}
 	return &pb.LogInResponse{Token: user.ID}, nil
 }
+
+func (h *UserHandler) ListHotels(c context.Context, req *pb.Empty) (*pb.HotelListResponse, error) {
+	room, err := h.Service.ListHotel()
+	if err != nil {
+		return nil, err
+	}
+	var rooms []*pb.Room
+	for _, v := range room.Rooms {
+		rooms = append(rooms, &pb.Room{
+			Room:        v.Room,
+			Availablity: v.Availablity,
+		})
+	}
+	return &pb.HotelListResponse{Hotels: rooms}, nil
+}

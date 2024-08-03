@@ -19,11 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	HotelService_AddRoom_FullMethodName    = "/hotelservice.HotelService/AddRoom"
-	HotelService_RemoveRoom_FullMethodName = "/hotelservice.HotelService/RemoveRoom"
-	HotelService_ListRooms_FullMethodName  = "/hotelservice.HotelService/ListRooms"
-	HotelService_ListUsers_FullMethodName  = "/hotelservice.HotelService/ListUsers"
-	HotelService_HotelLogIn_FullMethodName = "/hotelservice.HotelService/HotelLogIn"
+	HotelService_AddRoom_FullMethodName      = "/hotelservice.HotelService/AddRoom"
+	HotelService_RemoveRoom_FullMethodName   = "/hotelservice.HotelService/RemoveRoom"
+	HotelService_ListRooms_FullMethodName    = "/hotelservice.HotelService/ListRooms"
+	HotelService_ChangeStatus_FullMethodName = "/hotelservice.HotelService/ChangeStatus"
 )
 
 // HotelServiceClient is the client API for HotelService service.
@@ -33,8 +32,7 @@ type HotelServiceClient interface {
 	AddRoom(ctx context.Context, in *AddRoomRequest, opts ...grpc.CallOption) (*RoomResponse, error)
 	RemoveRoom(ctx context.Context, in *RemoveRoomRequest, opts ...grpc.CallOption) (*RoomResponse, error)
 	ListRooms(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*RoomListResponse, error)
-	ListUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserListResponse, error)
-	HotelLogIn(ctx context.Context, in *HotelLogInRequest, opts ...grpc.CallOption) (*HotelLogInResponse, error)
+	ChangeStatus(ctx context.Context, in *ChangeStatusRequest, opts ...grpc.CallOption) (*RoomResponse, error)
 }
 
 type hotelServiceClient struct {
@@ -75,20 +73,10 @@ func (c *hotelServiceClient) ListRooms(ctx context.Context, in *Empty, opts ...g
 	return out, nil
 }
 
-func (c *hotelServiceClient) ListUsers(ctx context.Context, in *Empty, opts ...grpc.CallOption) (*UserListResponse, error) {
+func (c *hotelServiceClient) ChangeStatus(ctx context.Context, in *ChangeStatusRequest, opts ...grpc.CallOption) (*RoomResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UserListResponse)
-	err := c.cc.Invoke(ctx, HotelService_ListUsers_FullMethodName, in, out, cOpts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *hotelServiceClient) HotelLogIn(ctx context.Context, in *HotelLogInRequest, opts ...grpc.CallOption) (*HotelLogInResponse, error) {
-	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(HotelLogInResponse)
-	err := c.cc.Invoke(ctx, HotelService_HotelLogIn_FullMethodName, in, out, cOpts...)
+	out := new(RoomResponse)
+	err := c.cc.Invoke(ctx, HotelService_ChangeStatus_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -102,8 +90,7 @@ type HotelServiceServer interface {
 	AddRoom(context.Context, *AddRoomRequest) (*RoomResponse, error)
 	RemoveRoom(context.Context, *RemoveRoomRequest) (*RoomResponse, error)
 	ListRooms(context.Context, *Empty) (*RoomListResponse, error)
-	ListUsers(context.Context, *Empty) (*UserListResponse, error)
-	HotelLogIn(context.Context, *HotelLogInRequest) (*HotelLogInResponse, error)
+	ChangeStatus(context.Context, *ChangeStatusRequest) (*RoomResponse, error)
 	mustEmbedUnimplementedHotelServiceServer()
 }
 
@@ -123,11 +110,8 @@ func (UnimplementedHotelServiceServer) RemoveRoom(context.Context, *RemoveRoomRe
 func (UnimplementedHotelServiceServer) ListRooms(context.Context, *Empty) (*RoomListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListRooms not implemented")
 }
-func (UnimplementedHotelServiceServer) ListUsers(context.Context, *Empty) (*UserListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListUsers not implemented")
-}
-func (UnimplementedHotelServiceServer) HotelLogIn(context.Context, *HotelLogInRequest) (*HotelLogInResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method HotelLogIn not implemented")
+func (UnimplementedHotelServiceServer) ChangeStatus(context.Context, *ChangeStatusRequest) (*RoomResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ChangeStatus not implemented")
 }
 func (UnimplementedHotelServiceServer) mustEmbedUnimplementedHotelServiceServer() {}
 func (UnimplementedHotelServiceServer) testEmbeddedByValue()                      {}
@@ -204,38 +188,20 @@ func _HotelService_ListRooms_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _HotelService_ListUsers_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Empty)
+func _HotelService_ChangeStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ChangeStatusRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HotelServiceServer).ListUsers(ctx, in)
+		return srv.(HotelServiceServer).ChangeStatus(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: HotelService_ListUsers_FullMethodName,
+		FullMethod: HotelService_ChangeStatus_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HotelServiceServer).ListUsers(ctx, req.(*Empty))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _HotelService_HotelLogIn_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(HotelLogInRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(HotelServiceServer).HotelLogIn(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: HotelService_HotelLogIn_FullMethodName,
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HotelServiceServer).HotelLogIn(ctx, req.(*HotelLogInRequest))
+		return srv.(HotelServiceServer).ChangeStatus(ctx, req.(*ChangeStatusRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -260,12 +226,8 @@ var HotelService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _HotelService_ListRooms_Handler,
 		},
 		{
-			MethodName: "ListUsers",
-			Handler:    _HotelService_ListUsers_Handler,
-		},
-		{
-			MethodName: "HotelLogIn",
-			Handler:    _HotelService_HotelLogIn_Handler,
+			MethodName: "ChangeStatus",
+			Handler:    _HotelService_ChangeStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

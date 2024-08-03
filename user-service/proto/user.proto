@@ -30,14 +30,13 @@ message LogInResponse {
   string token = 1;
 }
 
-message Hotel {
-  int32 id = 1;
-  string name = 2;
-  string address = 3;
+message Room {
+  int32 room = 1;
+  bool availablity = 2;
 }
 
 message HotelListResponse {
-  repeated Hotel hotels = 1;
+  repeated Room hotels = 1;
 }
 
 message Empty {}

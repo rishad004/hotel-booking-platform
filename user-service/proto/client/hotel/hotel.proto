@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package hotelservice;
+
+option go_package = "github.com/rishad004/hotel-booking-platform/hotel";
+
+service HotelService {
+  rpc ListRooms(Empty) returns (RoomListResponse);
+}
+
+message Room {
+  int32 room = 1;
+  bool availablity = 2;
+}
+
+message RoomListResponse {
+  repeated Room rooms = 1;
+}
+
+message Empty {}

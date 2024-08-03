@@ -1,6 +1,11 @@
 package service
 
-import "errors"
+import (
+	"context"
+	"errors"
+
+	hotel_pb "github.com/rishad004/hotel-booking-platform/user-service/proto/client/hotel"
+)
 
 type User struct {
 	ID       string
@@ -17,10 +22,16 @@ type UserRepo interface {
 type UserService interface {
 	SignUp(name, password, email string) (*User, error)
 	LogIn(email, password string) (*User, error)
+	ListHotel() (*hotel_pb.RoomListResponse, error)
 }
 
 type userService struct {
-	repo UserRepo
+	hotelClient hotel_pb.HotelServiceClient
+	repo        UserRepo
+}
+
+func NewUserService(repo UserRepo, hotelClient hotel_pb.HotelServiceClient) *userService {
+	return &userService{repo: repo, hotelClient: hotelClient}
 }
 
 func (s *userService) LogIn(email, password string) (*User, error) {
@@ -31,14 +42,18 @@ func (s *userService) LogIn(email, password string) (*User, error) {
 	return user, nil
 }
 
-func NewUserService(repo UserRepo) *userService {
-	return &userService{repo: repo}
-}
-
 func (s *userService) SignUp(name, password, email string) (*User, error) {
 	user, err := s.repo.CreateUser(name, password, email)
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (s *userService) ListHotel() (*hotel_pb.RoomListResponse, error) {
+	room, err := s.hotelClient.ListRooms(context.Background(), &hotel_pb.Empty{})
+	if err != nil {
+		return nil, err
+	}
+	return room, nil
 }
